@@ -2,15 +2,44 @@
 #define FORMAST_HPP_INCLUDED
 
 #include <boost/cstdint.hpp>
+#include <boost/optional.hpp>
 #include <boost/shared_ptr.hpp>
+#include <list>
 #include <string>
+#include <vector>
 
 #include "formast/detail/ast.hpp"
 
 namespace formast
 {
 
+typedef formast::detail::ast::Scope Scope;
 typedef formast::detail::ast::Expr Expr;
+
+typedef std::string Doc;
+
+struct Attr {
+    std::string class_name;
+    std::string name;
+    boost::optional<Doc> doc;
+};
+
+struct Class {
+    std::string name;
+    boost::optional<std::string> base_name;
+    boost::optional<Doc> doc;
+    boost::optional<Scope> scope;
+};
+
+struct If {
+    Expr expr;
+    Scope scope;
+};
+
+struct IfElifsElse {
+    std::vector<If> ifs_;
+    boost::optional<Scope> else_;
+};
 
 class Parser
 {
@@ -18,6 +47,9 @@ public:
     Parser();
     virtual Expr parse_stream(std::istream & is) = 0;
     Expr parse_string(std::string const & s);
+    // TODO: new parser API
+    //virtual void parse_stream(std::istream & is, Scope & scope) = 0;
+    //void parse_string(std::string const & s, Scope & scope);
 };
 
 class XmlParser : public Parser
@@ -25,6 +57,8 @@ class XmlParser : public Parser
 public:
     XmlParser();
     virtual Expr parse_stream(std::istream & is);
+    // TODO: new parser API
+    //virtual void parse_stream(std::istream & is, Scope & scope);
 };
 
 class Visitor
@@ -32,6 +66,12 @@ class Visitor
 public:
     Visitor();
     virtual ~Visitor();
+
+    virtual void scope(Scope const & scope);
+    virtual void scope_attr(Attr const & attr);
+    virtual void scope_class(Class const & class_);
+    virtual void scope_if_elifs_else(IfElifsElse const & ifelifselse);
+
     virtual void expr(Expr const & e);
     virtual void expr_uint(boost::uint64_t const & n);
     virtual void expr_id(std::string const & i);
@@ -45,6 +85,8 @@ private:
     // pimpl idiom
     class ExprVisitor;
     boost::shared_ptr<ExprVisitor> _expr_visitor;
+    class ScopeVisitor;
+    boost::shared_ptr<ScopeVisitor> _scope_visitor;
 };
 
 } // namespace formast
