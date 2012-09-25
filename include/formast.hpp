@@ -13,7 +13,8 @@
 namespace formast
 {
 
-typedef formast::detail::ast::Scope Scope;
+typedef formast::detail::ast::Top Top;
+typedef formast::detail::ast::Stats Stats;
 typedef formast::detail::ast::Expr Expr;
 
 typedef std::string Doc;
@@ -28,17 +29,17 @@ struct Class {
     std::string name;
     boost::optional<std::string> base_name;
     boost::optional<Doc> doc;
-    boost::optional<Scope> scope;
+    boost::optional<Stats> stats;
 };
 
 struct If {
     Expr expr;
-    Scope scope;
+    Stats stats;
 };
 
 struct IfElifsElse {
     std::vector<If> ifs_;
-    boost::optional<Scope> else_;
+    boost::optional<Stats> else_;
 };
 
 class Parser
@@ -67,10 +68,11 @@ public:
     Visitor();
     virtual ~Visitor();
 
-    virtual void scope(Scope const & scope);
-    virtual void scope_attr(Attr const & attr);
-    virtual void scope_class(Class const & class_);
-    virtual void scope_if_elifs_else(IfElifsElse const & ifelifselse);
+    virtual void descr(Descr const & descr);
+    virtual void descr_class_(Class const & class_);
+
+    virtual void stat_attr(Attr const & attr);
+    virtual void stat_if_elifs_else(IfElifsElse const & ifelifselse);
 
     virtual void expr(Expr const & e);
     virtual void expr_uint(boost::uint64_t const & n);
