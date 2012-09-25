@@ -68,11 +68,12 @@ public:
     Visitor();
     virtual ~Visitor();
 
-    virtual void descr(Descr const & descr);
-    virtual void descr_class_(Class const & class_);
+    virtual void top(Top const & top);
+    virtual void top_class(Class const & class_);
 
-    virtual void stat_attr(Attr const & attr);
-    virtual void stat_if_elifs_else(IfElifsElse const & ifelifselse);
+    virtual void stats(Stats const & stats);
+    virtual void stats_attr(Attr const & attr);
+    virtual void stats_if_elifs_else(IfElifsElse const & ifelifselse);
 
     virtual void expr(Expr const & e);
     virtual void expr_uint(boost::uint64_t const & n);
