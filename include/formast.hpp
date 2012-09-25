@@ -49,8 +49,8 @@ public:
     virtual Expr parse_stream(std::istream & is) = 0;
     Expr parse_string(std::string const & s);
     // TODO: new parser API
-    //virtual void parse_stream(std::istream & is, Scope & scope) = 0;
-    //void parse_string(std::string const & s, Scope & scope);
+    //virtual void parse_stream(std::istream & is, Top & top) = 0;
+    //void parse_string(std::string const & s, Top & top);
 };
 
 class XmlParser : public Parser
@@ -59,7 +59,7 @@ public:
     XmlParser();
     virtual Expr parse_stream(std::istream & is);
     // TODO: new parser API
-    //virtual void parse_stream(std::istream & is, Scope & scope);
+    //virtual void parse_stream(std::istream & is, Top & top);
 };
 
 class Visitor
